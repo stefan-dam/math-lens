@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Math Lens — Meta Display Prototype</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,Arial,sans-serif;background:#000;color:#fff}
+*{box-sizing:border-box}body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#000}
+main{position:relative;width:min(100vw,600px);aspect-ratio:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:48px;text-align:center;gap:22px}
+small{color:#aaa;font-size:17px;letter-spacing:.06em;text-transform:uppercase}
+#equation{font-size:clamp(25px,6vw,39px);font-family:Georgia,'Times New Roman',serif;line-height:1.4;overflow-wrap:anywhere}
+#description{color:#ddd;font-size:19px;line-height:1.4;max-width:440px}
+nav{position:absolute;bottom:28px;display:flex;gap:12px}button{background:#151515;color:#fff;border:1px solid #999;padding:12px 20px;border-radius:11px;font-size:17px;cursor:pointer}
+button:focus{outline:3px solid #fff}#count{position:absolute;top:26px;right:30px;color:#aaa;font-size:15px}
+@media(max-width:400px){main{padding:30px}#description{font-size:16px}}
+</style>
+</head>
+<body>
+<main aria-label="Mathematics research equation display">
+<div id="count"></div><small>Math Lens · Proof of concept</small>
+<div id="equation" aria-live="polite"></div><div id="description"></div>
+<nav><button id="prev" aria-label="Previous equation">← Previous</button><button id="next" aria-label="Next equation">Next →</button></nav>
+</main>
+<script>
+const slides=[
+ {eq:'min<sub>x</sub> sup<sub>P ∈ B<sub>ε</sub>(P̂)</sub> E<sub>P</sub>[ℓ(x, ξ)]',desc:'Distributionally robust optimization: minimize worst-case expected loss.'},
+ {eq:'W<sub>1</sub>(P, P̂) ≤ ε',desc:'The ambiguity set is a Wasserstein ball around an empirical distribution.'},
+ {eq:'E<sub>P</sub>[f] ≤ E<sub>P̂</sub>[f] + εL',desc:'For an L-Lipschitz function, Wasserstein robustness gives this upper bound.'},
+ {eq:'∥Ax − b∥<sub>2</sub> ≤ δ',desc:'A compact example of a constraint you might inspect while walking.'}
+];
+let i=0;const eq=document.getElementById('equation'),description=document.getElementById('description'),count=document.getElementById('count');
+function show(){eq.innerHTML=slides[i].eq;description.textContent=slides[i].desc;count.textContent=`${i+1} / ${slides.length}`}
+function go(step){i=(i+step+slides.length)%slides.length;show()}
+document.getElementById('prev').onclick=()=>go(-1);document.getElementById('next').onclick=()=>go(1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key==='Enter'){go(1)}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){go(-1)}});
+show();
+</script>
+</body>
+</html>
